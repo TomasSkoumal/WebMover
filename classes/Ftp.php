@@ -6,7 +6,7 @@
  * @author     Tomáš Skoumal
  * @package    WebMover/Ftp
  */
-class Ftp extends NObject
+class Ftp extends \Nette\Object
 {
     private $connection;
     private $error;

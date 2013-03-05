@@ -1,31 +1,43 @@
 <?php
 
 include "./classes/nette.min.php";
+include "./classes/CreateZipFile.php";
+include "./classes/CreateZipDirectory.php";
 
-$loader = new Nette\Loaders\RobotLoader;
+include "./classes/FileSystem.php";
+include "./classes/Ftp.php";
+include "./templates.php";
+
+//\Nette\Caching::setCacheStorage(\Nette\Caching\Storages\DevNullStorage);
+
+/*$loader = new Nette\Loaders\RobotLoader;
 $loader->addDirectory('classes');
-$loader->register();
+$loader->register();*/
 
-use \Nette\Templating\Template;
+\Nette\Diagnostics\Debugger::enable();
+
+
+
+
 
 // zobrazim seznam se jmeny adresaru
 
 // u kazdeho adresare budou tlacitka - rozbalit, stahnout jako zip, zobrazit velikost - vse ajax
 
+if (!isset($_GET['action'])) {
+    $_GET['action'] = 'homepage';
+}
 
+$template = new \Skoumal\Template();
+// zde rozhodnu co se bude dit
 
-$template = new Template;
-$template->directories = FileSystem::directoryList('/');
-$template->setSource('<!doctype html>
-<html lang="cs" dir="ltr">
-<head>
-<meta charset="UTF-8">
-<title></title>
-</head>
-<body>
-{foreach $directories as $directory}{$directory}<br>{/foreach}
-</body>
-</html>
+switch ($_GET['action']) {
+    case 'detail': $template->detail($_GET['directory']); break;
+    default: $template->homepage();
+}
 
-');
 $template->render();
+
+
+
+

@@ -2,7 +2,7 @@
 
 use \Nette\Utils;
 
-class FileSystem extends NObject
+class FileSystem extends \Nette\Object
 {
 
     public function __construct()
@@ -23,41 +23,21 @@ class FileSystem extends NObject
      */
     public static function directoryList($listedDirectory) {
         $directories = array();
-        foreach (Finder::findDirectories('*')->in($listedDirectory) as $key => $directory) {
-            $directories[] = $directory;
+        foreach (\Nette\Utils\Finder::findDirectories('*')->in($listedDirectory) as $key => $directory) {
+            $directories[] = $directory.'/';
         }
         return $directories;
     }
 
     public static function calculateDirectorySize($directory)
     {
-        if (strpos('Windows', $_SERVER['HTTP_USER_AGENT'])!==false) {
-            return FileSystem::calculateDirectorySizeWindows($directory);
-        } else {
-            return FileSystem::calculateDirectorySizeLinux($directory);
-        }
-    }
-
-    private static function calculateDirectorySizeWindows($directory) {
-        $obj = new COM ( 'scripting.filesystemobject' );
-        if ( is_object ( $obj ) )
+        $bytes = 0;
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+        foreach ($iterator as $i)
         {
-            $ref = $obj->getfolder ( $directory );
-            $obj = null;
-            return $ref->size;
+            $bytes += $i->getSize();
         }
-        else
-        {
-            throw new InvalidArgumentException(sprintf('Cannot calculate size of directory %s', $directory));
-        }
-    }
-
-    private static function calculateDirectorySizeLinux($directory) {
-        $io = popen ( '/usr/bin/du -sk ' . $directory, 'r' );
-        $size = fgets ( $io, 4096);
-        $size = substr ( $size, 0, strpos ( $size, ' ' ) );
-        pclose ( $io );
-        return $size;
+        return number_format($bytes/1024/1024, 1, '.', ' ');
     }
 
     public function copyDirectory($source, $target)
