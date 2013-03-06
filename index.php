@@ -33,6 +33,7 @@ $template = new \Skoumal\Template();
 
 switch ($_GET['action']) {
     case 'detail': $template->detail($_GET['directory']); break;
+    case 'download': $template->download($_GET['directory']); break;
     default: $template->homepage();
 }
 

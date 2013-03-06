@@ -52,7 +52,8 @@ $(document).ready(function() {
     });
 
     $(".dir-download").click(function() {
-
+        var directory = $(this).parent().children(".dir-name").text();
+        window.location.href = "index.php?action=download&directory="+directory;
     });
 
     $(".dir-detail").click(function() {
@@ -84,5 +85,10 @@ $(document).ready(function() {
         $data['countOfFiles'] = \FileSystem::calculateNumberOfFilesInDirectory($directory);
         echo json_encode($data);
     }
+
+    public function download($directory) {
+        $zipFile = \FileSystem::zipDirectory($directory, 'download.zip');
+    }
+
 }
 
