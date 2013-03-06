@@ -40,6 +40,15 @@ class FileSystem extends \Nette\Object
         return number_format($bytes/1024/1024, 1, '.', ' ');
     }
 
+    public static function calculateNumberOfFilesInDirectory($directory) {
+        $dir = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+        $count = 0;
+        foreach($dir as $file ){
+            $count += is_file($file) ? 1 : 0;
+        }
+        return $count;
+    }
+
     public function copyDirectory($source, $target)
     {
         $source = rtrim($source, '/');

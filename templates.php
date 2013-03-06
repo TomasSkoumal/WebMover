@@ -62,7 +62,7 @@ $(document).ready(function() {
         $.getJSON("index.php?action=detail&directory="+directory, function(data) {
 
             elem.append("Velikost: "+data["size"]+" MiB<br>");
-            elem.append("Počet souborů: "+data["countOfObjects"]);
+            elem.append("Počet souborů: "+data["countOfFiles"]);
           /*$.each(data, function(key, val) {
 
             $(".dir-detail .data").append(val);
@@ -81,7 +81,7 @@ $(document).ready(function() {
     public function detail($directory) {
         $data = array();
         $data['size'] = \FileSystem::calculateDirectorySize($directory);
-        $data['countOfObjects'] = 100;
+        $data['countOfFiles'] = \FileSystem::calculateNumberOfFilesInDirectory($directory);
         echo json_encode($data);
     }
 }
